@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const ORANGE = "#EE4D2D";
 
 export default function TargetScreen() {
-  const [target, setTarget] = useState("7000000");
+  const [target, setTarget] = useState("600000");
 
   const handleSave = () => {
     const val = parseInt(String(target).replace(/[^0-9]/g, ""), 10) || 0;
@@ -40,7 +40,7 @@ export default function TargetScreen() {
         <Text style={styles.subtitle}>Tentukan target pendapatan bulan ini</Text>
         <View style={styles.card}>
           <Text style={styles.label}>Target Pendapatan (Rp)</Text>
-          <TextInput style={styles.input} value={target} onChangeText={setTarget} placeholder="7000000" keyboardType="numeric" />
+          <TextInput style={styles.input} value={target} onChangeText={setTarget} placeholder="600000" keyboardType="numeric" />
           <Text style={styles.hint}>Target akan digunakan untuk perhitungan kelas strategi.</Text>
           <TouchableOpacity style={styles.button} onPress={handleSave}>
             <Text style={styles.buttonText}>Simpan Target</Text>
