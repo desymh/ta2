@@ -2,14 +2,16 @@ import React from "react";
 import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DUMMY_HISTORY } from "../data/dummyData";
+import { useAppData } from "../context/AppDataContext";
 
 const ORANGE = "#EE4D2D";
 
 export default function PendapatanScreen() {
-  const totalGmv = DUMMY_HISTORY.reduce((s, h) => s + h.gmv, 0);
+  const { totalGmvThisMonth, monthlyTarget, achievementPercent } = useAppData();
   const totalKomisi = DUMMY_HISTORY.reduce((s, h) => s + h.komisi, 0);
   const totalVideo = DUMMY_HISTORY.reduce((s, h) => s + h.video, 0);
-  const formatRupiah = (v) => "Rp " + v.toLocaleString("id-ID");
+  const formatRupiah = (v) => "Rp " + Math.round(v).toLocaleString("id-ID");
+  const pct = achievementPercent();
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
@@ -18,25 +20,32 @@ export default function PendapatanScreen() {
         <Text style={styles.subtitle}>Total pencapaian bulan ini</Text>
 
         <View style={styles.summaryCard}>
-          <Text style={styles.summaryTitle}>Total Bulan Ini</Text>
+          <Text style={styles.summaryTitle}>Pencapaian Bulan Ini</Text>
+          <Text style={styles.pctBig}>{pct.toFixed(1)}%</Text>
+          <Text style={styles.pctText}>
+            Pencapaian bulan ini {pct.toFixed(1)}% dari {formatRupiah(monthlyTarget)} (target bulananmu)
+          </Text>
+          <View style={styles.progressTrack}>
+            <View style={[styles.progressFill, { width: `${Math.min(pct, 100)}%` }]} />
+          </View>
           <View style={styles.summaryRow}>
             <View style={styles.summaryItem}>
-              <Text style={styles.summaryLabel}>GMV</Text>
-              <Text style={styles.summaryValue}>{formatRupiah(totalGmv)}</Text>
+              <Text style={styles.summaryLabel}>Tercapai (a)</Text>
+              <Text style={styles.summaryValue}>{formatRupiah(totalGmvThisMonth)}</Text>
             </View>
             <View style={styles.summaryItem}>
-              <Text style={styles.summaryLabel}>Komisi</Text>
-              <Text style={styles.summaryValue}>{formatRupiah(totalKomisi)}</Text>
+              <Text style={styles.summaryLabel}>Target (b)</Text>
+              <Text style={styles.summaryValue}>{formatRupiah(monthlyTarget)}</Text>
             </View>
           </View>
           <View style={styles.summaryRow}>
             <View style={styles.summaryItem}>
-              <Text style={styles.summaryLabel}>Total Video</Text>
-              <Text style={styles.summaryValue}>{totalVideo} video</Text>
+              <Text style={styles.summaryLabel}>Komisi</Text>
+              <Text style={styles.summaryValue}>{formatRupiah(totalKomisi)}</Text>
             </View>
             <View style={styles.summaryItem}>
-              <Text style={styles.summaryLabel}>Hari Tercatat</Text>
-              <Text style={styles.summaryValue}>{DUMMY_HISTORY.length} hari</Text>
+              <Text style={styles.summaryLabel}>Total Video</Text>
+              <Text style={styles.summaryValue}>{totalVideo} video</Text>
             </View>
           </View>
         </View>
@@ -67,7 +76,11 @@ const styles = StyleSheet.create({
   title: { fontSize: 22, fontWeight: "800", color: "#333", marginBottom: 4 },
   subtitle: { fontSize: 13, color: "#888", marginBottom: 14 },
   summaryCard: { backgroundColor: ORANGE, borderRadius: 14, padding: 16, marginBottom: 14 },
-  summaryTitle: { color: "#fff", fontSize: 15, fontWeight: "800", marginBottom: 12 },
+  summaryTitle: { color: "#fff", fontSize: 15, fontWeight: "800", marginBottom: 4 },
+  pctBig: { color: "#fff", fontSize: 34, fontWeight: "900" },
+  pctText: { color: "#FFE0D6", fontSize: 12, marginBottom: 10 },
+  progressTrack: { height: 10, backgroundColor: "rgba(255,255,255,0.25)", borderRadius: 8, overflow: "hidden", marginBottom: 12 },
+  progressFill: { height: "100%", backgroundColor: "#fff", borderRadius: 8 },
   summaryRow: { flexDirection: "row", gap: 10, marginBottom: 8 },
   summaryItem: { flex: 1, backgroundColor: "rgba(255,255,255,0.18)", borderRadius: 10, padding: 10 },
   summaryLabel: { color: "#FFE0D6", fontSize: 11, marginBottom: 2 },

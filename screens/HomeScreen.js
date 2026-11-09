@@ -1,15 +1,17 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { DUMMY_MONTHLY_ANALYSIS, DUMMY_RESULT } from "../data/dummyData";
+import { DUMMY_MONTHLY_ANALYSIS } from "../data/dummyData";
+import { useAppData } from "../context/AppDataContext";
 
 const ORANGE = "#EE4D2D";
 const ORANGE_LIGHT = "#FFF5F2";
-const ORANGE_DARK = "#D73211";
 
 export default function HomeScreen({ navigation }) {
   const { months, gmv, komisi, terjual } = DUMMY_MONTHLY_ANALYSIS;
-  const formatRupiah = (val) => "Rp " + val.toLocaleString("id-ID");
+  const { monthlyTarget, totalGmvThisMonth, achievementPercent } = useAppData();
+  const formatRupiah = (val) => "Rp " + Math.round(val).toLocaleString("id-ID");
+  const pct = achievementPercent();
 
   const menus = [
     { icon: "🏆", label: "Seleksi Produk", desc: "Ranking produk", screen: "SeleksiProduk" },
@@ -24,10 +26,16 @@ export default function HomeScreen({ navigation }) {
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <View style={styles.headerCard}>
-          <Text style={styles.headerTitle}>Ringkasan Bulan Ini</Text>
-          <Text style={styles.headerSubtitle}>Status: {DUMMY_RESULT.class_label_text}</Text>
+          <Text style={styles.headerTitle}>Pencapaian Bulan Ini</Text>
+          <Text style={styles.pctBig}>{pct.toFixed(1)}%</Text>
+          <Text style={styles.headerSubtitle}>
+            Pencapaian bulan ini {pct.toFixed(1)}% dari {formatRupiah(monthlyTarget)}
+          </Text>
+          <View style={styles.progressTrack}>
+            <View style={[styles.progressFill, { width: `${Math.min(pct, 100)}%` }]} />
+          </View>
           <View style={styles.missionBox}>
-            <Text style={styles.missionText}>{DUMMY_RESULT.daily_mission}</Text>
+            <Text style={styles.missionText}>Tercapai (a): {formatRupiah(totalGmvThisMonth)}  ·  Target (b): {formatRupiah(monthlyTarget)}</Text>
           </View>
         </View>
 
@@ -79,10 +87,13 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFF5F2" },
   scroll: { padding: 14, paddingBottom: 28 },
   headerCard: { backgroundColor: ORANGE, borderRadius: 16, padding: 16, marginBottom: 16 },
-  headerTitle: { fontSize: 18, fontWeight: "800", color: "#fff", marginBottom: 4 },
+  headerTitle: { fontSize: 16, fontWeight: "800", color: "#fff", marginBottom: 2 },
+  pctBig: { fontSize: 34, fontWeight: "900", color: "#fff" },
   headerSubtitle: { fontSize: 12, color: "#FFE0D6", marginBottom: 10 },
+  progressTrack: { height: 10, backgroundColor: "rgba(255,255,255,0.25)", borderRadius: 8, overflow: "hidden", marginBottom: 10 },
+  progressFill: { height: "100%", backgroundColor: "#fff", borderRadius: 8 },
   missionBox: { backgroundColor: "rgba(255,255,255,0.18)", borderRadius: 10, padding: 10 },
-  missionText: { color: "#fff", fontSize: 12, fontWeight: "600" },
+  missionText: { color: "#fff", fontSize: 11, fontWeight: "600" },
   sectionTitle: { fontSize: 15, fontWeight: "700", color: "#333", marginBottom: 10, marginTop: 4 },
   statsRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
   statCard: { flex: 1, backgroundColor: "#fff", borderRadius: 12, padding: 10, borderTopWidth: 3, elevation: 2, shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4 },

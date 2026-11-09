@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAppData } from "../context/AppDataContext";
 
 const ORANGE = "#EE4D2D";
 
 const emptyProduct = () => ({ name: "", gmv: "", rating: "", komisi: "", terjual: "" });
 
 export default function SeleksiProdukScreen() {
+  const { monthlyTarget, setBestProduct } = useAppData();
   const [products, setProducts] = useState([emptyProduct(), emptyProduct(), emptyProduct()]);
   const [results, setResults] = useState(null);
 
@@ -28,6 +30,7 @@ export default function SeleksiProdukScreen() {
       const terjual = toNum(p.terjual);
       // Skor sederhana (dummy): GMV + (rating*100000) + (komisi*1000) + (terjual*5000)
       const score = gmv + rating * 100000 + komisi * 1000 + terjual * 5000;
+      const unitValue = komisi > 0 ? komisi : gmv > 0 && terjual > 0 ? gmv / terjual : 0;
       return {
         ...p,
         idx: i + 1,
@@ -35,12 +38,17 @@ export default function SeleksiProdukScreen() {
         rating,
         komisi,
         terjual,
+        unitValue,
         score,
         name: p.name?.trim() || `Produk ${i + 1}`,
       };
     });
     scored.sort((a, b) => b.score - a.score);
-    setResults(scored.map((p, rank) => ({ ...p, rank: rank + 1 })));
+    const ranked = scored.map((p, rank) => ({ ...p, rank: rank + 1 }));
+    const best = ranked[0];
+    const needed = best.unitValue > 0 ? Math.ceil(monthlyTarget / best.unitValue) : null;
+    setResults({ ranked, best, needed, target: monthlyTarget });
+    setBestProduct({ name: best.name, needed, target: monthlyTarget, unitValue: best.unitValue });
   };
 
   const formatRupiah = (v) => "Rp " + Math.round(v).toLocaleString("id-ID");
@@ -50,6 +58,10 @@ export default function SeleksiProdukScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Seleksi Produk</Text>
         <Text style={styles.subtitle}>Input 3 produk untuk melihat ranking terbaik</Text>
+
+        <View style={styles.targetInfo}>
+          <Text style={styles.targetInfoText}>Target bulanan (b): {formatRupiah(monthlyTarget)}</Text>
+        </View>
 
         {products.map((p, i) => (
           <View key={i} style={styles.card}>
@@ -87,7 +99,20 @@ export default function SeleksiProdukScreen() {
           <View style={styles.resultCard}>
             <Text style={styles.resultTitle}>Hasil Ranking</Text>
             <Text style={styles.resultSub}>Produk terbaik untuk diupload</Text>
-            {results.map((r) => (
+
+            <View style={styles.adviceBox}>
+              {results.needed ? (
+                <Text style={styles.adviceText}>
+                  Kamu harus minimal terjual <Text style={styles.adviceBold}>{results.needed} unit</Text> dari produk <Text style={styles.adviceBold}>{results.best.name}</Text> untuk mencapai target {formatRupiah(results.target)}.
+                </Text>
+              ) : (
+                <Text style={styles.adviceText}>
+                  Isi Komisi atau GMV & Total Terjual pada produk terbaik ({results.best.name}) agar bisa dihitung kebutuhan unit untuk mencapai target {formatRupiah(results.target)}.
+                </Text>
+              )}
+            </View>
+
+            {results.ranked.map((r) => (
               <View key={r.idx} style={[styles.rankRow, r.rank === 1 && styles.rankTop]}>
                 <View style={[styles.rankBadge, r.rank === 1 && styles.rankBadgeTop]}>
                   <Text style={[styles.rankNum, r.rank === 1 && styles.rankNumTop]}>#{r.rank}</Text>
@@ -110,7 +135,9 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFF5F2" },
   scroll: { padding: 16, paddingBottom: 30 },
   title: { fontSize: 22, fontWeight: "800", color: "#333", marginBottom: 4 },
-  subtitle: { fontSize: 13, color: "#888", marginBottom: 14 },
+  subtitle: { fontSize: 13, color: "#888", marginBottom: 10 },
+  targetInfo: { backgroundColor: "#FFF0EC", borderRadius: 10, padding: 10, marginBottom: 12, borderWidth: 1, borderColor: "#FFD4C8" },
+  targetInfoText: { color: ORANGE, fontWeight: "700", fontSize: 12 },
   card: { backgroundColor: "#fff", borderRadius: 14, padding: 14, marginBottom: 12, elevation: 2, shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4 },
   cardTitle: { fontSize: 15, fontWeight: "700", color: ORANGE, marginBottom: 6 },
   label: { fontSize: 12, fontWeight: "600", color: "#333", marginBottom: 4, marginTop: 8 },
@@ -121,7 +148,10 @@ const styles = StyleSheet.create({
   buttonText: { color: "#fff", fontWeight: "700", fontSize: 16 },
   resultCard: { backgroundColor: "#fff", borderRadius: 14, padding: 14, elevation: 2, shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4 },
   resultTitle: { fontSize: 16, fontWeight: "800", color: "#333" },
-  resultSub: { fontSize: 12, color: "#888", marginBottom: 12 },
+  resultSub: { fontSize: 12, color: "#888", marginBottom: 10 },
+  adviceBox: { backgroundColor: "#FFF5F2", borderRadius: 10, padding: 12, marginBottom: 12, borderLeftWidth: 4, borderLeftColor: ORANGE },
+  adviceText: { color: "#444", fontSize: 13, lineHeight: 19 },
+  adviceBold: { fontWeight: "800", color: ORANGE },
   rankRow: { flexDirection: "row", alignItems: "flex-start", paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: "#FFF0EC" },
   rankTop: { backgroundColor: "#FFF5F2", marginHorizontal: -8, paddingHorizontal: 8, borderRadius: 10 },
   rankBadge: { width: 36, height: 36, borderRadius: 18, backgroundColor: "#FFE0D6", alignItems: "center", justifyContent: "center", marginRight: 10 },
