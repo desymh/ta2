@@ -8,8 +8,29 @@ export default function TargetScreen() {
   const [target, setTarget] = useState("7000000");
 
   const handleSave = () => {
-    if (!target) { Alert.alert("Peringatan", "Target wajib diisi"); return; }
-    Alert.alert("Sukses", "Target bulanan tersimpan (dummy)");
+    const val = parseInt(String(target).replace(/[^0-9]/g, ""), 10) || 0;
+    if (!val) { Alert.alert("Peringatan", "Target wajib diisi"); return; }
+    Alert.alert(
+      "Konfirmasi Target",
+      "Inputan ini akan disimpan sebagai target bulanan, apakah kamu ingin memperbarui target bulan ini?",
+      [
+        { text: "Batal", style: "cancel" },
+        {
+          text: "Ya, Simpan",
+          onPress: () => {
+            let pesan = "Targetmu realistis semangat, semoga mencapai target.";
+            if (val > 1000000) {
+              pesan = "Maaf targetmu terlalu besar, silahkan masukkan angka yang realistis";
+            } else if (val > 500000) {
+              pesan = "Targetmu di atas rata-rata, semangatlah mengejar target.";
+            } else if (val >= 300000 && val <= 500000) {
+              pesan = "Targetmu realistis semangat, semoga mencapai target.";
+            }
+            Alert.alert("Hasil Target", pesan);
+          },
+        },
+      ]
+    );
   };
 
   return (

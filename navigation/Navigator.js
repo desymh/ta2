@@ -48,7 +48,6 @@ export default function AppNavigator() {
       {isAuthenticated ? (
         <Tab.Navigator screenOptions={{ tabBarActiveTintColor: "#EE4D2D", tabBarInactiveTintColor: "#999", headerStyle: { backgroundColor: "#EE4D2D" }, headerTintColor: "#fff", headerTitleStyle: { fontWeight: "700" } }}>
           <Tab.Screen name="Beranda" component={HomeStack} options={{ headerShown: false }} />
-          <Tab.Screen name="Pencapaian" component={HomeScreen} options={{ title: "Pencapaian" }} />
           <Tab.Screen name="Profil" component={ProfileScreen} options={{ title: "Profil" }} />
         </Tab.Navigator>
       ) : (
