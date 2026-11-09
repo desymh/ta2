@@ -12,8 +12,9 @@ export default function HomeScreen({ navigation }) {
   const formatRupiah = (val) => "Rp " + val.toLocaleString("id-ID");
 
   const menus = [
+    { icon: "🏆", label: "Seleksi Produk", desc: "Ranking produk", screen: "SeleksiProduk" },
     { icon: "🎯", label: "Target", desc: "Target bulanan", screen: "Target" },
-    { icon: "💰", label: "Pendapatan", desc: "Kelola pendapatan", screen: "Pendapatan" },
+    { icon: "💰", label: "Pendapatan", desc: "Hasil bulanan", screen: "Pendapatan" },
     { icon: "📝", label: "Input Harian", desc: "Catat hasil", screen: "InputHasil" },
     { icon: "📅", label: "Histori", desc: "Riwayat aktivitas", screen: "Histori" },
     { icon: "📊", label: "Analisis", desc: "Grafik performa", screen: "Analisis" },

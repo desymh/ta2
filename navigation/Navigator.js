@@ -12,6 +12,7 @@ import InputHasilScreen from "../screens/InputHasilScreen";
 import HistoriScreen from "../screens/HistoriScreen";
 import AnalisisScreen from "../screens/AnalisisScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import SeleksiProdukScreen from "../screens/SeleksiProdukScreen";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 
 const Tab = createBottomTabNavigator();
@@ -27,6 +28,7 @@ function HomeStack() {
       <Stack.Screen name="InputHasil" component={InputHasilScreen} options={{ title: "Input Hasil Harian" }} />
       <Stack.Screen name="Histori" component={HistoriScreen} options={{ title: "Histori" }} />
       <Stack.Screen name="Analisis" component={AnalisisScreen} options={{ title: "Analisis Bulanan" }} />
+      <Stack.Screen name="SeleksiProduk" component={SeleksiProdukScreen} options={{ title: "Seleksi Produk" }} />
     </Stack.Navigator>
   );
 }
