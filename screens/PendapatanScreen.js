@@ -1,30 +1,21 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Alert } from "react-native";
+import React from "react";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DUMMY_HISTORY } from "../data/dummyData";
 
 const ORANGE = "#EE4D2D";
 
 export default function PendapatanScreen() {
-  const [gmv, setGmv] = useState("2500000");
-  const [komisi, setKomisi] = useState("350000");
-  const [video, setVideo] = useState("3");
-
   const totalGmv = DUMMY_HISTORY.reduce((s, h) => s + h.gmv, 0);
   const totalKomisi = DUMMY_HISTORY.reduce((s, h) => s + h.komisi, 0);
   const totalVideo = DUMMY_HISTORY.reduce((s, h) => s + h.video, 0);
   const formatRupiah = (v) => "Rp " + v.toLocaleString("id-ID");
 
-  const handleSave = () => {
-    if (!gmv) { Alert.alert("Peringatan", "GMV wajib diisi"); return; }
-    Alert.alert("Sukses", "Data pendapatan tersimpan (dummy)");
-  };
-
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Pendapatan</Text>
-        <Text style={styles.subtitle}>Total pencapaian bulan ini (dummy)</Text>
+        <Text style={styles.subtitle}>Total pencapaian bulan ini</Text>
 
         <View style={styles.summaryCard}>
           <Text style={styles.summaryTitle}>Total Bulan Ini</Text>
@@ -50,17 +41,20 @@ export default function PendapatanScreen() {
           </View>
         </View>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Input Pendapatan Hari Ini</Text>
-          <Text style={styles.label}>GMV Hari Ini (Rp)</Text>
-          <TextInput style={styles.input} value={gmv} onChangeText={setGmv} placeholder="2500000" keyboardType="numeric" />
-          <Text style={styles.label}>Komisi Hari Ini (Rp)</Text>
-          <TextInput style={styles.input} value={komisi} onChangeText={setKomisi} placeholder="350000" keyboardType="numeric" />
-          <Text style={styles.label}>Jumlah Video Upload</Text>
-          <TextInput style={styles.input} value={video} onChangeText={setVideo} placeholder="3" keyboardType="numeric" />
-          <TouchableOpacity style={styles.button} onPress={handleSave}>
-            <Text style={styles.buttonText}>Simpan</Text>
-          </TouchableOpacity>
+        <View style={styles.listCard}>
+          <Text style={styles.listTitle}>Rincian Harian</Text>
+          {DUMMY_HISTORY.map((item) => (
+            <View key={item.id} style={styles.listRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.listDate}>{item.date}</Text>
+                <Text style={styles.listMeta}>{item.video} video · {item.status}</Text>
+              </View>
+              <View style={{ alignItems: "flex-end" }}>
+                <Text style={styles.listValue}>{formatRupiah(item.gmv)}</Text>
+                <Text style={styles.listSub}>Komisi {formatRupiah(item.komisi)}</Text>
+              </View>
+            </View>
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -78,10 +72,11 @@ const styles = StyleSheet.create({
   summaryItem: { flex: 1, backgroundColor: "rgba(255,255,255,0.18)", borderRadius: 10, padding: 10 },
   summaryLabel: { color: "#FFE0D6", fontSize: 11, marginBottom: 2 },
   summaryValue: { color: "#fff", fontSize: 13, fontWeight: "800" },
-  card: { backgroundColor: "#fff", borderRadius: 14, padding: 18, elevation: 2, shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4 },
-  cardTitle: { fontSize: 15, fontWeight: "700", color: "#333", marginBottom: 4 },
-  label: { fontSize: 13, fontWeight: "600", color: "#333", marginBottom: 6, marginTop: 12 },
-  input: { backgroundColor: "#FFF5F2", borderRadius: 10, padding: 12, color: "#333", borderWidth: 1, borderColor: "#FFD4C8", fontSize: 15 },
-  button: { backgroundColor: ORANGE, borderRadius: 10, padding: 14, alignItems: "center", marginTop: 20 },
-  buttonText: { color: "#fff", fontWeight: "700", fontSize: 16 },
+  listCard: { backgroundColor: "#fff", borderRadius: 14, padding: 14, elevation: 2, shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4 },
+  listTitle: { fontSize: 15, fontWeight: "700", color: "#333", marginBottom: 10 },
+  listRow: { flexDirection: "row", alignItems: "center", paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: "#FFF0EC" },
+  listDate: { fontSize: 13, fontWeight: "700", color: "#333" },
+  listMeta: { fontSize: 11, color: "#999", marginTop: 2 },
+  listValue: { fontSize: 13, fontWeight: "700", color: ORANGE },
+  listSub: { fontSize: 11, color: "#888", marginTop: 2 },
 });
