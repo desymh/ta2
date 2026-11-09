@@ -1,0 +1,16 @@
+diff --git a/node_modules/react-native/Libraries/Renderer/shims/ReactNative.js b/node_modules/react-native/Libraries/Renderer/shims/ReactNative.js
+new file mode 100644
+index 0000000..745e4b6
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Renderer/shims/ReactNative.js
+@@ -0,0 +1,10 @@
++/**
++ * Shim for react-native-reanimated compatibility with React Native 0.88+
++ * ReactNative (Paper renderer) has been removed in favor of ReactFabric.
++ * This shim re-exports ReactFabric as a drop-in replacement.
++ */
++
++'use strict';
++
++export { default } from './ReactFabric';
++
