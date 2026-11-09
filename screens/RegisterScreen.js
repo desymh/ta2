@@ -10,8 +10,10 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../context/AuthContext";
 
 export default function RegisterScreen({ navigation }) {
+  const { signIn } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +34,7 @@ export default function RegisterScreen({ navigation }) {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      navigation.replace("Main");
+      signIn();
     }, 800);
   };
 
@@ -96,18 +98,20 @@ export default function RegisterScreen({ navigation }) {
   );
 }
 
+const ORANGE = "#EE4D2D";
+
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f5f7fa" },
-  scroll: { padding: 24, paddingTop: 60, paddingBottom: 40 },
-  title: { fontSize: 28, fontWeight: "bold", color: "#1a252f", textAlign: "center", marginBottom: 6 },
-  subtitle: { fontSize: 14, color: "#6b7a8d", textAlign: "center", marginBottom: 28 },
-  card: { backgroundColor: "#fff", borderRadius: 16, padding: 20, elevation: 4, shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 10 },
-  label: { fontSize: 13, fontWeight: "600", color: "#34495e", marginBottom: 6, marginTop: 12 },
-  input: { backgroundColor: "#f1f5f9", borderRadius: 10, padding: 12, color: "#1a252f", borderWidth: 1, borderColor: "#e2e8f0", fontSize: 15 },
-  button: { backgroundColor: "#2c3e50", borderRadius: 10, padding: 14, alignItems: "center", marginTop: 20 },
+  container: { flex: 1, backgroundColor: "#FFF5F2" },
+  scroll: { padding: 24, paddingTop: 50, paddingBottom: 40 },
+  title: { fontSize: 26, fontWeight: "900", color: ORANGE, textAlign: "center", marginBottom: 6 },
+  subtitle: { fontSize: 14, color: "#888", textAlign: "center", marginBottom: 24 },
+  card: { backgroundColor: "#fff", borderRadius: 16, padding: 20, elevation: 3, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8 },
+  label: { fontSize: 13, fontWeight: "600", color: "#333", marginBottom: 6, marginTop: 12 },
+  input: { backgroundColor: "#FFF5F2", borderRadius: 10, padding: 12, color: "#333", borderWidth: 1, borderColor: "#FFD4C8", fontSize: 15 },
+  button: { backgroundColor: ORANGE, borderRadius: 10, padding: 14, alignItems: "center", marginTop: 20 },
   buttonText: { color: "#fff", fontWeight: "700", fontSize: 16 },
   linkRow: { flexDirection: "row", justifyContent: "center", marginTop: 16 },
-  linkText: { color: "#6b7a8d", fontSize: 14 },
-  link: { color: "#2c3e50", fontWeight: "700", fontSize: 14, marginLeft: 4 },
-  error: { color: "#c0392b", fontWeight: "600", textAlign: "center", marginTop: 12 },
+  linkText: { color: "#888", fontSize: 14 },
+  link: { color: ORANGE, fontWeight: "700", fontSize: 14, marginLeft: 4 },
+  error: { color: "#D32F2F", fontWeight: "600", textAlign: "center", marginTop: 12 },
 });

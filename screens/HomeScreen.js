@@ -1,106 +1,96 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { DUMMY_MONTHLY_ANALYSIS } from "../data/dummyData";
+import { DUMMY_MONTHLY_ANALYSIS, DUMMY_RESULT } from "../data/dummyData";
+
+const ORANGE = "#EE4D2D";
+const ORANGE_LIGHT = "#FFF5F2";
+const ORANGE_DARK = "#D73211";
 
 export default function HomeScreen({ navigation }) {
-  console.log("[HomeScreen] Rendering");
   const { months, gmv, komisi, terjual } = DUMMY_MONTHLY_ANALYSIS;
+  const formatRupiah = (val) => "Rp " + val.toLocaleString("id-ID");
 
-  const formatRupiah = (val) =>
-    "Rp " + val.toLocaleString("id-ID");
+  const menus = [
+    { icon: "🎯", label: "Target", desc: "Target bulanan", screen: "Target" },
+    { icon: "💰", label: "Pendapatan", desc: "Kelola pendapatan", screen: "Pendapatan" },
+    { icon: "📝", label: "Input Harian", desc: "Catat hasil", screen: "InputHasil" },
+    { icon: "📅", label: "Histori", desc: "Riwayat aktivitas", screen: "Histori" },
+    { icon: "📊", label: "Analisis", desc: "Grafik performa", screen: "Analisis" },
+  ];
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.title}>Beranda</Text>
-        <Text style={styles.subtitle}>Ringkasan 3 bulan terakhir</Text>
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <View style={styles.headerCard}>
+          <Text style={styles.headerTitle}>Ringkasan Bulan Ini</Text>
+          <Text style={styles.headerSubtitle}>Status: {DUMMY_RESULT.class_label_text}</Text>
+          <View style={styles.missionBox}>
+            <Text style={styles.missionText}>{DUMMY_RESULT.daily_mission}</Text>
+          </View>
+        </View>
 
-        <View style={styles.grid}>
-          <View style={[styles.gridBox, { borderColor: "#3498db" }]}>
-            <Text style={[styles.gridLabel, { color: "#3498db" }]}>GMV</Text>
+        <Text style={styles.sectionTitle}>Statistik 3 Bulan Terakhir</Text>
+        <View style={styles.statsRow}>
+          <View style={[styles.statCard, { borderTopColor: ORANGE }]}>
+            <Text style={[styles.statLabel, { color: ORANGE }]}>GMV</Text>
             {months.map((m, i) => (
-              <Text key={i} style={styles.gridItem}>
-                {m}: {formatRupiah(gmv[i])}
-              </Text>
+              <Text key={i} style={styles.statItem}>{m}: {formatRupiah(gmv[i])}</Text>
             ))}
           </View>
-          <View style={[styles.gridBox, { borderColor: "#2ecc71" }]}>
-            <Text style={[styles.gridLabel, { color: "#2ecc71" }]}>Komisi</Text>
+          <View style={[styles.statCard, { borderTopColor: "#FF8A50" }]}>
+            <Text style={[styles.statLabel, { color: "#FF8A50" }]}>Komisi</Text>
             {months.map((m, i) => (
-              <Text key={i} style={styles.gridItem}>
-                {m}: {formatRupiah(komisi[i])}
-              </Text>
+              <Text key={i} style={styles.statItem}>{m}: {formatRupiah(komisi[i])}</Text>
             ))}
           </View>
-          <View style={[styles.gridBox, { borderColor: "#e67e22" }]}>
-            <Text style={[styles.gridLabel, { color: "#e67e22" }]}>Terjual</Text>
+          <View style={[styles.statCard, { borderTopColor: "#FFB74D" }]}>
+            <Text style={[styles.statLabel, { color: "#FFB74D" }]}>Terjual</Text>
             {months.map((m, i) => (
-              <Text key={i} style={styles.gridItem}>
-                {m}: {terjual[i]} unit
-              </Text>
+              <Text key={i} style={styles.statItem}>{m}: {terjual[i]} unit</Text>
             ))}
           </View>
         </View>
 
-        <Text style={styles.sectionTitle}>Menu</Text>
-
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Target")}>
-          <Text style={styles.menuIcon}>🎯</Text>
-          <View>
-            <Text style={styles.menuText}>Input Target Bulanan</Text>
-            <Text style={styles.menuDesc}>Atur target pendapatan bulan ini</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Pendapatan")}>
-          <Text style={styles.menuIcon}>💰</Text>
-          <View>
-            <Text style={styles.menuText}>Pendapatan</Text>
-            <Text style={styles.menuDesc}>Kelola data pendapatan</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("InputHasil")}>
-          <Text style={styles.menuIcon}>📝</Text>
-          <View>
-            <Text style={styles.menuText}>Input Hasil Harian</Text>
-            <Text style={styles.menuDesc}>Catat GMV & komisi harian</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Histori")}>
-          <Text style={styles.menuIcon}>📅</Text>
-          <View>
-            <Text style={styles.menuText}>Histori</Text>
-            <Text style={styles.menuDesc}>Riwayat aktivitas</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Analisis")}>
-          <Text style={styles.menuIcon}>📊</Text>
-          <View>
-            <Text style={styles.menuText}>Analisis Bulanan</Text>
-            <Text style={styles.menuDesc}>Grafik & analisis performa</Text>
-          </View>
-        </TouchableOpacity>
+        <Text style={styles.sectionTitle}>Menu Utama</Text>
+        <View style={styles.grid}>
+          {menus.map((item) => (
+            <TouchableOpacity
+              key={item.screen}
+              style={styles.gridItem}
+              onPress={() => navigation.navigate(item.screen)}
+              activeOpacity={0.8}
+            >
+              <View style={styles.iconCircle}>
+                <Text style={styles.iconText}>{item.icon}</Text>
+              </View>
+              <Text style={styles.gridLabel}>{item.label}</Text>
+              <Text style={styles.gridDesc}>{item.desc}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f5f7fa" },
-  scroll: { padding: 16, paddingBottom: 30 },
-  title: { fontSize: 22, fontWeight: "bold", color: "#1a252f", marginBottom: 4 },
-  subtitle: { fontSize: 13, color: "#6b7a8d", marginBottom: 16 },
-  grid: { flexDirection: "row", gap: 10, marginBottom: 24 },
-  gridBox: { flex: 1, backgroundColor: "#fff", borderRadius: 12, padding: 12, elevation: 2, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 6, borderLeftWidth: 4 },
-  gridLabel: { fontSize: 13, fontWeight: "800", marginBottom: 6, textAlign: "center" },
-  gridItem: { fontSize: 10, color: "#34495e", marginBottom: 2 },
-  sectionTitle: { fontSize: 16, fontWeight: "700", color: "#2c3e50", marginBottom: 12, marginTop: 8 },
-  menuItem: { backgroundColor: "#fff", borderRadius: 12, padding: 14, flexDirection: "row", alignItems: "center", marginBottom: 10, elevation: 2, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 6 },
-  menuIcon: { fontSize: 24, marginRight: 12 },
-  menuText: { fontSize: 15, fontWeight: "700", color: "#1a252f" },
-  menuDesc: { fontSize: 12, color: "#6b7a8d", marginTop: 2 },
+  container: { flex: 1, backgroundColor: "#FFF5F2" },
+  scroll: { padding: 14, paddingBottom: 28 },
+  headerCard: { backgroundColor: ORANGE, borderRadius: 16, padding: 16, marginBottom: 16 },
+  headerTitle: { fontSize: 18, fontWeight: "800", color: "#fff", marginBottom: 4 },
+  headerSubtitle: { fontSize: 12, color: "#FFE0D6", marginBottom: 10 },
+  missionBox: { backgroundColor: "rgba(255,255,255,0.18)", borderRadius: 10, padding: 10 },
+  missionText: { color: "#fff", fontSize: 12, fontWeight: "600" },
+  sectionTitle: { fontSize: 15, fontWeight: "700", color: "#333", marginBottom: 10, marginTop: 4 },
+  statsRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
+  statCard: { flex: 1, backgroundColor: "#fff", borderRadius: 12, padding: 10, borderTopWidth: 3, elevation: 2, shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4 },
+  statLabel: { fontSize: 12, fontWeight: "800", marginBottom: 6, textAlign: "center" },
+  statItem: { fontSize: 9, color: "#555", marginBottom: 2 },
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  gridItem: { width: "31%", backgroundColor: "#fff", borderRadius: 14, paddingVertical: 14, paddingHorizontal: 8, alignItems: "center", elevation: 2, shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4 },
+  iconCircle: { width: 44, height: 44, borderRadius: 22, backgroundColor: ORANGE_LIGHT, alignItems: "center", justifyContent: "center", marginBottom: 8 },
+  iconText: { fontSize: 22 },
+  gridLabel: { fontSize: 12, fontWeight: "700", color: "#333", textAlign: "center" },
+  gridDesc: { fontSize: 9, color: "#999", textAlign: "center", marginTop: 2 },
 });

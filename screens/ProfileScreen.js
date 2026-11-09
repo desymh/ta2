@@ -4,6 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { DUMMY_USER } from "../data/dummyData";
 import { useAuth } from "../context/AuthContext";
 
+const ORANGE = "#EE4D2D";
+
 export default function ProfileScreen() {
   const { signOut } = useAuth();
   const user = DUMMY_USER;
@@ -11,13 +13,13 @@ export default function ProfileScreen() {
   const handleLogout = () => {
     Alert.alert("Keluar", "Yakin ingin keluar?", [
       { text: "Batal" },
-      { text: "Keluar", onPress: signOut },
+      { text: "Keluar", style: "destructive", onPress: signOut },
     ]);
   };
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <View style={styles.profileHeader}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>{user.name.charAt(0).toUpperCase()}</Text>
@@ -31,35 +33,40 @@ export default function ProfileScreen() {
           <MenuItem icon="⚙️" label="Pengaturan Akun" onPress={() => Alert.alert("Info", "Fitur segera hadir")} />
           <MenuItem icon="🔔" label="Notifikasi" onPress={() => Alert.alert("Info", "Fitur segera hadir")} />
           <MenuItem icon="❓" label="Bantuan" onPress={() => Alert.alert("Info", "Fitur segera hadir")} />
-          <MenuItem icon="ℹ️" label="Tentang Aplikasi" onPress={() => Alert.alert("Info", "Fitur segera hadir")} />
-          <MenuItem icon="🚪" label="Keluar" onPress={handleLogout} isLast />
+          <MenuItem icon="ℹ️" label="Tentang Aplikasi" onPress={() => Alert.alert("Info", "Portfolio Decision Support v1.0")} />
+          <MenuItem icon="🚪" label="Keluar" onPress={handleLogout} isLast danger />
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const MenuItem = ({ icon, label, onPress, isLast }) => (
+const MenuItem = ({ icon, label, onPress, isLast, danger }) => (
   <TouchableOpacity style={[styles.menuItem, isLast && styles.menuItemLast]} onPress={onPress}>
-    <Text style={styles.menuIcon}>{icon}</Text>
-    <Text style={styles.menuLabel}>{label}</Text>
+    <View style={[styles.menuIconWrap, danger && styles.menuIconDanger]}>
+      <Text style={styles.menuIcon}>{icon}</Text>
+    </View>
+    <Text style={[styles.menuLabel, danger && styles.menuLabelDanger]}>{label}</Text>
     <Text style={styles.menuArrow}>›</Text>
   </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f5f7fa" },
+  container: { flex: 1, backgroundColor: "#FFF5F2" },
   scroll: { padding: 16, paddingBottom: 30 },
-  profileHeader: { alignItems: "center", paddingVertical: 30, backgroundColor: "#fff", borderRadius: 16, marginBottom: 20, elevation: 4, shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 10 },
-  avatar: { width: 80, height: 80, borderRadius: 40, backgroundColor: "#2c3e50", justifyContent: "center", alignItems: "center", marginBottom: 12 },
-  avatarText: { color: "#fff", fontSize: 32, fontWeight: "bold" },
-  profileName: { fontSize: 20, fontWeight: "bold", color: "#1a252f", marginBottom: 4 },
-  profileEmail: { fontSize: 14, color: "#6b7a8d", marginBottom: 2 },
-  profilePhone: { fontSize: 13, color: "#95a5a6", marginTop: 4 },
-  card: { backgroundColor: "#fff", borderRadius: 12, overflow: "hidden", elevation: 2, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 6 },
-  menuItem: { flexDirection: "row", alignItems: "center", padding: 16, borderBottomWidth: 1, borderBottomColor: "#f1f5f9" },
+  profileHeader: { alignItems: "center", paddingVertical: 28, backgroundColor: ORANGE, borderRadius: 16, marginBottom: 16 },
+  avatar: { width: 76, height: 76, borderRadius: 38, backgroundColor: "#fff", justifyContent: "center", alignItems: "center", marginBottom: 10 },
+  avatarText: { color: ORANGE, fontSize: 30, fontWeight: "900" },
+  profileName: { fontSize: 20, fontWeight: "800", color: "#fff", marginBottom: 2 },
+  profileEmail: { fontSize: 13, color: "#FFE0D6" },
+  profilePhone: { fontSize: 12, color: "#FFD4C8", marginTop: 2 },
+  card: { backgroundColor: "#fff", borderRadius: 14, overflow: "hidden", elevation: 2, shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4 },
+  menuItem: { flexDirection: "row", alignItems: "center", padding: 14, borderBottomWidth: 1, borderBottomColor: "#FFF0EC" },
   menuItemLast: { borderBottomWidth: 0 },
-  menuIcon: { fontSize: 22, marginRight: 14, width: 28 },
-  menuLabel: { flex: 1, fontSize: 15, color: "#1a252f" },
-  menuArrow: { fontSize: 24, color: "#bdc3c7" },
+  menuIconWrap: { width: 36, height: 36, borderRadius: 10, backgroundColor: "#FFF5F2", alignItems: "center", justifyContent: "center", marginRight: 12 },
+  menuIconDanger: { backgroundColor: "#FFEBEE" },
+  menuIcon: { fontSize: 18 },
+  menuLabel: { flex: 1, fontSize: 15, color: "#333", fontWeight: "600" },
+  menuLabelDanger: { color: "#D32F2F" },
+  menuArrow: { fontSize: 22, color: "#ccc" },
 });

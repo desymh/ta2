@@ -20,7 +20,7 @@ const Stack = createNativeStackNavigator();
 function HomeStack() {
   const { signOut } = useAuth();
   return (
-    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: "#2c3e50" }, headerTintColor: "#fff" }}>
+    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: "#EE4D2D" }, headerTintColor: "#fff", headerTitleStyle: { fontWeight: "700" } }}>
       <Stack.Screen name="Beranda" component={HomeScreen} options={{ title: "Beranda" }} />
       <Stack.Screen name="Target" component={TargetScreen} options={{ title: "Target Bulanan" }} />
       <Stack.Screen name="Pendapatan" component={PendapatanScreen} options={{ title: "Pendapatan" }} />
@@ -33,7 +33,7 @@ function HomeStack() {
 
 function AuthStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: "#2c3e50" }, headerTintColor: "#fff" }}>
+    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: "#EE4D2D" }, headerTintColor: "#fff", headerTitleStyle: { fontWeight: "700" } }}>
       <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Masuk" }} />
       <Stack.Screen name="Register" component={RegisterScreen} options={{ title: "Daftar" }} />
     </Stack.Navigator>
@@ -46,7 +46,7 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       {isAuthenticated ? (
-        <Tab.Navigator screenOptions={{ tabBarActiveTintColor: "#2c3e50", tabBarInactiveTintColor: "#6b7a8d" }}>
+        <Tab.Navigator screenOptions={{ tabBarActiveTintColor: "#EE4D2D", tabBarInactiveTintColor: "#999", headerStyle: { backgroundColor: "#EE4D2D" }, headerTintColor: "#fff", headerTitleStyle: { fontWeight: "700" } }}>
           <Tab.Screen name="Beranda" component={HomeStack} options={{ headerShown: false }} />
           <Tab.Screen name="Pencapaian" component={HomeScreen} options={{ title: "Pencapaian" }} />
           <Tab.Screen name="Profil" component={ProfileScreen} options={{ title: "Profil" }} />
