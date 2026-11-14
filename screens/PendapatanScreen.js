@@ -1,16 +1,15 @@
 import React from "react";
 import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { DUMMY_HISTORY } from "../data/dummyData";
 import { useAppData } from "../context/AppDataContext";
 
 const ORANGE = "#EE4D2D";
 
 export default function PendapatanScreen() {
-  const { totalGmvThisMonth, monthlyTarget, achievementPercent } = useAppData();
-  const totalKomisi = DUMMY_HISTORY.reduce((s, h) => s + h.komisi, 0);
-  const totalVideo = DUMMY_HISTORY.reduce((s, h) => s + h.video, 0);
-  const formatRupiah = (v) => "Rp " + Math.round(v).toLocaleString("id-ID");
+  const { totalGmvThisMonth, monthlyTarget, achievementPercent, historyList } = useAppData();
+  const totalKomisi = historyList.reduce((s, h) => s + (Number(h.komisi) || 0), 0);
+  const totalVideo = historyList.reduce((s, h) => s + (Number(h.video) || 0), 0);
+  const formatRupiah = (v) => "Rp " + Math.round(v || 0).toLocaleString("id-ID");
   const pct = achievementPercent();
 
   return (
@@ -52,7 +51,7 @@ export default function PendapatanScreen() {
 
         <View style={styles.listCard}>
           <Text style={styles.listTitle}>Rincian Harian</Text>
-          {DUMMY_HISTORY.map((item) => (
+          {historyList.map((item) => (
             <View key={item.id} style={styles.listRow}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.listDate}>{item.date}</Text>

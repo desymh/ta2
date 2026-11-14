@@ -2,6 +2,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Ionicons } from "@expo/vector-icons";
 
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
@@ -48,9 +49,55 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       {isAuthenticated ? (
-        <Tab.Navigator screenOptions={{ tabBarActiveTintColor: "#EE4D2D", tabBarInactiveTintColor: "#999", headerStyle: { backgroundColor: "#EE4D2D" }, headerTintColor: "#fff", headerTitleStyle: { fontWeight: "700" } }}>
-          <Tab.Screen name="Beranda" component={HomeStack} options={{ headerShown: false }} />
-          <Tab.Screen name="Profil" component={ProfileScreen} options={{ title: "Profil" }} />
+        <Tab.Navigator
+          screenOptions={{
+            tabBarActiveTintColor: "#EE4D2D",
+            tabBarInactiveTintColor: "#888",
+            tabBarStyle: {
+              height: 60,
+              paddingBottom: 8,
+              paddingTop: 6,
+              backgroundColor: "#fff",
+              borderTopWidth: 1,
+              borderTopColor: "#FFE5DE",
+            },
+            tabBarLabelStyle: {
+              fontSize: 12,
+              fontWeight: "600",
+            },
+            headerStyle: { backgroundColor: "#EE4D2D" },
+            headerTintColor: "#fff",
+            headerTitleStyle: { fontWeight: "700" },
+          }}
+        >
+          <Tab.Screen
+            name="Beranda"
+            component={HomeStack}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ color, size, focused }) => (
+                <Ionicons
+                  name={focused ? "home" : "home-outline"}
+                  size={size || 24}
+                  color={color}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Profil"
+            component={ProfileScreen}
+            options={{
+              title: "Profil",
+              tabBarIcon: ({ color, size, focused }) => (
+                <Ionicons
+                  name={focused ? "person" : "person-outline"}
+                  size={size || 24}
+                  color={color}
+                />
+              ),
+            }}
+          />
         </Tab.Navigator>
       ) : (
         <AuthStack />

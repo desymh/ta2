@@ -1,17 +1,54 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAppData } from "../context/AppDataContext";
 
 const ORANGE = "#EE4D2D";
 
-export default function InputHasilScreen() {
+export default function InputHasilScreen({ navigation }) {
+  const { addDailyResult } = useAppData();
   const [gmv, setGmv] = useState("");
   const [komisi, setKomisi] = useState("");
   const [video, setVideo] = useState("");
 
   const handleSave = () => {
-    if (!gmv) { Alert.alert("Peringatan", "GMV wajib diisi"); return; }
-    Alert.alert("Sukses", "Hasil harian tersimpan (dummy)");
+    const cleanGmv = parseInt(String(gmv).replace(/[^0-9]/g, ""), 10) || 0;
+    if (!cleanGmv) {
+      Alert.alert("Peringatan", "GMV wajib diisi dengan nominal angka lebih dari 0.");
+      return;
+    }
+    const cleanKomisi = parseInt(String(komisi).replace(/[^0-9]/g, ""), 10) || Math.round(cleanGmv * 0.1);
+    const cleanVideo = parseInt(String(video).replace(/[^0-9]/g, ""), 10) || 0;
+
+    addDailyResult({
+      gmv: cleanGmv,
+      komisi: cleanKomisi,
+      video: cleanVideo,
+    });
+
+    Alert.alert(
+      "Sukses",
+      "Hasil harian berhasil disimpan! Pencapaian bulan ini dan histori aktivitas telah diperbarui.",
+      [
+        {
+          text: "Lihat Histori",
+          onPress: () => {
+            setGmv("");
+            setKomisi("");
+            setVideo("");
+            navigation.navigate("Histori");
+          },
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            setGmv("");
+            setKomisi("");
+            setVideo("");
+          },
+        },
+      ]
+    );
   };
 
   return (

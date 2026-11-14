@@ -22,9 +22,14 @@ export default function LoginScreen() {
     }
     setLoading(true);
     setTimeout(() => {
-      setLoading(false);
-      signIn();
-    }, 600);
+      try {
+        setLoading(false);
+        signIn(email, password);
+      } catch (err) {
+        setLoading(false);
+        setError(err.message || "Gagal masuk");
+      }
+    }, 500);
   };
 
   return (

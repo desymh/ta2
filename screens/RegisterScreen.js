@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/AuthContext";
 
 export default function RegisterScreen({ navigation }) {
-  const { signIn } = useAuth();
+  const { signUp } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,16 +33,21 @@ export default function RegisterScreen({ navigation }) {
     }
     setLoading(true);
     setTimeout(() => {
-      setLoading(false);
-      signIn();
-    }, 800);
+      try {
+        setLoading(false);
+        signUp({ name, email, password });
+      } catch (err) {
+        setLoading(false);
+        setError(err.message || "Gagal mendaftar");
+      }
+    }, 600);
   };
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <ScrollView contentContainerStyle={styles.scroll}>
         <Text style={styles.title}>Buat Akun Baru</Text>
-        <Text style={styles.subtitle}>Daftar untuk memulai</Text>
+        <Text style={styles.subtitle}>Daftar untuk memulai strategi afiliasimu</Text>
 
         <View style={styles.card}>
           <Text style={styles.label}>Nama Lengkap</Text>
@@ -50,8 +55,8 @@ export default function RegisterScreen({ navigation }) {
             style={styles.input}
             value={name}
             onChangeText={setName}
-            placeholder="Nama lengkap"
-            keyboardType="default-text"
+            placeholder="Nama"
+            autoCapitalize="words"
           />
           <Text style={styles.label}>Email</Text>
           <TextInput
@@ -83,7 +88,7 @@ export default function RegisterScreen({ navigation }) {
             {loading ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <Text style={styles.buttonText}>Daftar</Text>
+              <Text style={styles.buttonText}>Daftar & Lanjutkan</Text>
             )}
           </TouchableOpacity>
           <View style={styles.linkRow}>

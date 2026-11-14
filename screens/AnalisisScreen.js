@@ -1,16 +1,17 @@
 import React from "react";
 import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { DUMMY_MONTHLY_ANALYSIS } from "../data/dummyData";
+import { useAppData } from "../context/AppDataContext";
 
 const ORANGE = "#EE4D2D";
 
 export default function AnalisisScreen() {
-  const { months, gmv, komisi, terjual } = DUMMY_MONTHLY_ANALYSIS;
-  const maxGmv = Math.max(...gmv);
-  const maxKomisi = Math.max(...komisi);
-  const maxTerjual = Math.max(...terjual);
-  const formatRupiah = (val) => "Rp " + val.toLocaleString("id-ID");
+  const { monthlyStats } = useAppData();
+  const { months, gmv, komisi, terjual } = monthlyStats;
+  const maxGmv = Math.max(...gmv, 1);
+  const maxKomisi = Math.max(...komisi, 1);
+  const maxTerjual = Math.max(...terjual, 1);
+  const formatRupiah = (val) => "Rp " + Math.round(val || 0).toLocaleString("id-ID");
 
   const Bar = ({ value, max, color, label, suffix = "" }) => {
     const width = max > 0 ? (value / max) * 100 : 0;

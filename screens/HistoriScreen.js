@@ -1,12 +1,13 @@
 import React from "react";
 import { View, Text, ScrollView, StyleSheet, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { DUMMY_HISTORY } from "../data/dummyData";
+import { useAppData } from "../context/AppDataContext";
 
 const ORANGE = "#EE4D2D";
 
 export default function HistoriScreen() {
-  const formatRupiah = (val) => "Rp " + val.toLocaleString("id-ID");
+  const { historyList } = useAppData();
+  const formatRupiah = (val) => "Rp " + (Number(val) || 0).toLocaleString("id-ID");
 
   const renderItem = ({ item }) => (
     <View style={styles.historyCard}>
@@ -27,7 +28,7 @@ export default function HistoriScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Histori</Text>
         <Text style={styles.subtitle}>Riwayat aktivitas harian</Text>
-        <FlatList data={DUMMY_HISTORY} keyExtractor={(item) => item.id.toString()} renderItem={renderItem} scrollEnabled={false} />
+        <FlatList data={historyList} keyExtractor={(item) => item.id.toString()} renderItem={renderItem} scrollEnabled={false} />
       </ScrollView>
     </SafeAreaView>
   );

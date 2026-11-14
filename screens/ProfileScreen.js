@@ -7,8 +7,8 @@ import { useAuth } from "../context/AuthContext";
 const ORANGE = "#EE4D2D";
 
 export default function ProfileScreen() {
-  const { signOut } = useAuth();
-  const user = DUMMY_USER;
+  const { signOut, currentUser } = useAuth();
+  const user = currentUser || DUMMY_USER;
 
   const handleLogout = () => {
     Alert.alert("Keluar", "Yakin ingin keluar?", [
@@ -17,16 +17,18 @@ export default function ProfileScreen() {
     ]);
   };
 
+  const initialLetter = (user.name || "U").trim().charAt(0).toUpperCase();
+
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <View style={styles.profileHeader}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{user.name.charAt(0).toUpperCase()}</Text>
+            <Text style={styles.avatarText}>{initialLetter}</Text>
           </View>
-          <Text style={styles.profileName}>{user.name}</Text>
-          <Text style={styles.profileEmail}>{user.email}</Text>
-          <Text style={styles.profilePhone}>{user.phone}</Text>
+          <Text style={styles.profileName}>{user.name || "Pengguna"}</Text>
+          <Text style={styles.profileEmail}>{user.email || "-"}</Text>
+          {user.phone ? <Text style={styles.profilePhone}>{user.phone}</Text> : null}
         </View>
 
         <View style={styles.card}>
